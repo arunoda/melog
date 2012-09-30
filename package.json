@@ -1,0 +1,24 @@
+{
+	"name" : "melog",
+	"description" : "Personal Time Tracker for Hackers",
+	"version" : "0.1.0",
+	"author" : "Arunoda Susirpala <arunoda.susirpala@gmail.com> (http://arunoda.me)",
+	"main" : "./index",
+	"bin" : {
+		"melog": "./bin/melog.js"
+	},
+	"keywords" : [
+		"melog",
+		"time",
+		"Tracker"
+	],
+	"repository" : {
+		"type" : "git",
+		"url" : "http://github.com/arunoda/melog.git"
+	},
+	"dependencies" : {
+		"mkdirp" : "0.3.x"
+	},
+	"license" : "MIT/X11",
+	"engines": { "node": "*" }
+}
