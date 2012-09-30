@@ -34,22 +34,39 @@ switch (action) {
 	case "start":
 		(function() {
 
-			var task = process.argv[3];
+			var description = process.argv[3];
 			var config = readConfig();
 
 			if(config.project) {
 
 				var projectFileName = DATA_DIR + '/' + config.project;
 				var tasks = fs.readFileSync(projectFileName, "UTF8");
-				if(!tasks || tasks.substr(tasks.length -1, tasks.length) == "\n") {
-					//no running task
-					var taskInfo = new Date().getTime() + "::" + (task || "-") + "::";
-					fs.appendFileSync(projectFileName, taskInfo, "UTF8");
 
-					console.info("Task started!");
+				if(!tasks) {
+					//no any task, just add
+					writeTaskInfo();
 				} else {
-					console.info("Please stop the running task to create a new task");
+
+					var jsonTasks = tasks.split("\n");
+					var lastLine = jsonTasks[jsonTasks.length -1];
+					var task = JSON.parse(lastLine);
+
+					if(task.stopAt) {
+						//if this task stopped, crate the our task
+						writeTaskInfo();
+					} else {
+						//error message
+						console.info("Please stop the running task to create a new task");
+					}
 				}
+
+				function writeTaskInfo() {
+					var taskInfo = {
+						startAt: new Date().getTime(),
+						description: description
+					};
+					fs.appendFileSync(projectFileName, "\n" + JSON.stringify(taskInfo), "UTF8");
+				};
 
 			} else {
 
@@ -67,19 +84,25 @@ switch (action) {
 
 				var projectFileName = DATA_DIR + '/' + config.project;
 				var tasks = fs.readFileSync(projectFileName, "UTF8");
+
 				if(!tasks) {
-					//just created the project
+					//no any task, just add
 					console.info("Create your first task now!");
-				} else if(tasks.substr(tasks.length -2, tasks.length) != "::") {
-
-					console.info("Please start a task to stop it");
-
 				} else {
-					
-					var taskInfo = new Date().getTime() + "\n";
-					fs.appendFileSync(projectFileName, taskInfo, "UTF8");
 
-					console.info("Task stopped!");
+					var jsonTasks = tasks.split("\n");
+					var lastLine = jsonTasks[jsonTasks.length -1];
+					var task = JSON.parse(lastLine);
+
+					if(task.stopAt) {
+						//if this task stopped, show some error
+						console.info("Please start a task to stop it");
+					} else {
+						//stop the task
+						task.stopAt = new Date().getTime();
+						fs.appendFileSync(projectFileName, "\n" + JSON.stringify(task) , "UTF8");
+						console.info("Task stopped!");
+					}
 				}
 
 			} else {
