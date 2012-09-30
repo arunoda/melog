@@ -17,7 +17,9 @@
 		"url" : "http://github.com/arunoda/melog.git"
 	},
 	"dependencies" : {
-		"mkdirp" : "0.3.x"
+		"mkdirp" : "0.3.x",
+		"printf": "0.0.x",
+		"colors": "0.6.x"
 	},
 	"license" : "MIT/X11",
 	"engines": { "node": "*" }
